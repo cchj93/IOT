@@ -1,0 +1,81 @@
+5. Código fuente
+
+/*
+	Sketch function: Temperature sensor sketch with TMP36 
+    Dev: Santiago Torres.
+    date: 12-09-2024
+    */
+
+#define LED 			13
+#define MOTOR 			12
+
+//#define sensorVal 	0
+#define tempVal			0
+//#const	pinA0		
+
+int sensorVal = 0;
+  
+void setup()
+{
+	Serial.begin(9600);
+	pinMode(LED, OUTPUT);
+}
+
+void alert(){
+  digitalWrite(LED,HIGH);
+  delay(1000);
+  digitalWrite(LED,LOW);
+  delay(1000);
+
+}
+
+void loop()
+{
+  float temp = 0;
+  int sensorVal=analogRead(A0);
+  Serial.print("SensorVal input: ");
+  Serial.println(sensorVal);
+  
+  //Se usa esta formula para un TMP36
+  temp = ( sensorVal * (500.0 / 1023.0) - 50.0 );
+  Serial.print("Temperature: ");
+  Serial.print(temp);
+  Serial.print("\xB0");
+  Serial.println("C");
+
+  /*
+  	10 bits => 0 -> 2 ^ 10-1 = 0 -> 1023
+    0 	 => 0V
+    1023 => 5V
+    
+    TMP36 => Produce 500mV (0.5V) a 0°C
+    Cada grado aumentara 10mV (0.01V)
+    
+    Factor de compensacion
+    offset => Margen de error (restar offset) => 50.0
+    
+  */
+    
+  //  
+ 
+  if(temp >= 25.0 || temp >30.0){
+     digitalWrite(MOTOR, HIGH); 
+     alert();
+  }
+  
+  else if(temp <= 10.0 && temp  < 25.0) {
+     digitalWrite(MOTOR, LOW);  
+     digitalWrite(LED, LOW);  
+
+  }
+  if(temp < 10.0){
+     digitalWrite(LED, HIGH);  
+	 digitalWrite(MOTOR, LOW);  
+  }
+  
+  else{
+     digitalWrite(LED, LOW);    
+  }
+  
+     
+}
